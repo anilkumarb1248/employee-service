@@ -61,10 +61,10 @@ public class EmployeeDataHandler {
 			EMPLOYEES_DATA_MAP.put(autoIncreamentEmpId++, employee);
 			
 			status.setMessage("Employee added successfully");
-			status.setStatusCode("200");
+			status.setStatusCode("201");
 		}else {
-			status.setErrorMessage("Failed to add employee");
-			status.setStatusCode("400");
+			status.setErrorMessage("Failed to add employee-duplicate entry found");
+			status.setStatusCode("409"); // CONFLICT - means duplicate entry
 		}
 		
 		
@@ -78,8 +78,8 @@ public class EmployeeDataHandler {
 			status.setMessage("Employee updated successfully with id: " + employee.getId());
 			status.setStatusCode("200");
 		}else {
-			status.setErrorMessage("Failed to update employee with id: " + employee.getId());
-			status.setStatusCode("400");
+			status.setErrorMessage("Failed to update employee, No Employee found with id: " + employee.getId());
+			status.setStatusCode("204"); // means No-Content
 		}
 		return status;
 	}
@@ -92,7 +92,7 @@ public class EmployeeDataHandler {
 			status.setStatusCode("200");
 		}else {
 			status.setErrorMessage("Failed to delete employee with id: " + id);
-			status.setStatusCode("400");
+			status.setStatusCode("204"); // means No-Content
 		}
 		return status;
 	}

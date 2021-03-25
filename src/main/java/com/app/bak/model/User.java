@@ -18,7 +18,7 @@ public class User implements Serializable {
 	private String fullName;
 	private String password;
 	private String email;
-	private int mobileNumber;
+	private long mobileNumber;
 	private List<AccessType> accessTypes;
 
 	public User() {
@@ -119,14 +119,14 @@ public class User implements Serializable {
 	/**
 	 * @return the mobileNumber
 	 */
-	public int getMobileNumber() {
+	public long getMobileNumber() {
 		return mobileNumber;
 	}
 
 	/**
 	 * @param mobileNumber the mobileNumber to set
 	 */
-	public void setMobileNumber(int mobileNumber) {
+	public void setMobileNumber(long mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
 

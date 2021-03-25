@@ -39,27 +39,31 @@ public class UserDataHandler {
 		return new ArrayList<User>(USER_DATA_MAP.values());
 	}
 
-	public User getUserByUserId(String userId) {
-		List<User> users = new ArrayList<User>(USER_DATA_MAP.values());
-		return users.stream().filter(user -> userId.equalsIgnoreCase(user.getUserId())).findAny().orElse(null);
-	}
-
 	public User getUser(int id) {
 		return USER_DATA_MAP.get(id);
+	}
+
+	public User getUserByUserId(String userId) {
+		List<User> users = new ArrayList<>(USER_DATA_MAP.values());
+		return users.stream().filter(user -> userId.equalsIgnoreCase(user.getUserId())).findAny().orElse(null);
 	}
 
 	public ResponseStatus addUser(User user) {
 		ResponseStatus status = new ResponseStatus();
 
-		if (!USER_DATA_MAP.containsKey(user.getId())) {
+		List<User> users = new ArrayList<>(USER_DATA_MAP.values());
+		User duplicateUser = users.stream().filter(u -> u.getFullName().equalsIgnoreCase(user.getFullName())).findAny()
+				.orElse(null);
+
+		if (null == duplicateUser) {
 			user.setId(autoIncreamentUserId);
 			USER_DATA_MAP.put(autoIncreamentUserId++, user);
 
 			status.setMessage("User added successfully");
-			status.setStatusCode("200");
+			status.setStatusCode("201");
 		} else {
-			status.setErrorMessage("Failed to add user");
-			status.setStatusCode("400");
+			status.setErrorMessage("Failed to add user-duplicate entry");
+			status.setStatusCode("409");
 		}
 
 		return status;
@@ -72,8 +76,8 @@ public class UserDataHandler {
 			status.setMessage("User updated successfully with id: " + user.getId());
 			status.setStatusCode("200");
 		} else {
-			status.setErrorMessage("Failed to update user with id: " + user.getId());
-			status.setStatusCode("400");
+			status.setErrorMessage("Failed to update user, User not found with id: " + user.getId());
+			status.setStatusCode("204");
 		}
 		return status;
 	}
@@ -85,8 +89,8 @@ public class UserDataHandler {
 			status.setMessage("User deleted successfully with id: " + id);
 			status.setStatusCode("200");
 		} else {
-			status.setErrorMessage("Failed to delete user with id: " + id);
-			status.setStatusCode("400");
+			status.setErrorMessage("Failed to delete user, User not found with id: " + id);
+			status.setStatusCode("204");
 		}
 		return status;
 	}
