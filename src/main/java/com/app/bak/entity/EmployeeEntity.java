@@ -1,67 +1,64 @@
-package com.app.bak.model;
+package com.app.bak.entity;
 
-import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.app.bak.enums.Gender;
 import com.app.bak.enums.MaritalStatus;
 import com.app.bak.enums.Role;
 
-/**
- * @author anilb
- *
- */
-public class Employee implements Serializable {
+@Entity
+@Table(name = "EMPLOYEE")
+public class EmployeeEntity {
 
-	private static final long serialVersionUID = 1L;
-
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+
+	@Column(name = "FIRST_NAME")
 	private String firstName;
+
+	@Column(name = "MIDDL_ENAME")
 	private String middleName;
+
+	@Column(name = "LAST_NAME")
 	private String lastName;
+
+	@Column(name = "ROLE")
+	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@Column(name = "SALARY")
 	private double salary;
+
+	@Column(name = "DOB")
 	private Date dob;
+
+	@Column(name = "GENDER")
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
+
+	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
+
+	@Column(name = "EMAIL")
 	private String email;
+
+	@Column(name = "ADDRESS")
 	private String address;
+
+	@Column(name = "MARITAL_STATUS")
+	@Enumerated(EnumType.STRING)
 	private MaritalStatus maritalStatus;
-
-	public Employee() {
-	}
-
-	/**
-	 * @param id
-	 * @param firstName
-	 * @param middleName
-	 * @param lastName
-	 * @param role
-	 * @param salary
-	 * @param dob
-	 * @param gender
-	 * @param mobileNumber
-	 * @param email
-	 * @param address
-	 * @param pinCode
-	 * @param maritalStaus
-	 */
-	public Employee(int id, String firstName, String middleName, String lastName, Role role, double salary, Date dob,
-			Gender gender, String mobileNumber, String email, String address, MaritalStatus maritalStatus) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.middleName = middleName;
-		this.lastName = lastName;
-		this.role = role;
-		this.salary = salary;
-		this.dob = dob;
-		this.gender = gender;
-		this.mobileNumber = mobileNumber;
-		this.email = email;
-		this.address = address;
-		this.maritalStatus = maritalStatus;
-	}
 
 	/**
 	 * @return the id
@@ -231,56 +228,4 @@ public class Employee implements Serializable {
 		this.maritalStatus = maritalStatus;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Employee other = (Employee) obj;
-		if (firstName == null) {
-			if (other.firstName != null)
-				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (id != other.id)
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		if (middleName == null) {
-			if (other.middleName != null)
-				return false;
-		} else if (!middleName.equals(other.middleName))
-			return false;
-		return true;
-	}
-
 }
-
-//enum Role {
-//	SE, SSE, TA, LEAD, MANAGER, CEO
-//}
-//
-//enum Gender {
-//	Male, Female
-//}
-//
-//enum MaritalStatus {
-//	Married, Unmarried
-//}

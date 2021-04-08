@@ -1,50 +1,44 @@
-package com.app.bak.model;
+package com.app.bak.entity;
 
-import java.io.Serializable;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.app.bak.enums.AccessType;
 
-/**
- * @author anilb
- *
- */
-public class User implements Serializable {
+@Entity
+@Table(name = "USER")
+public class UserEntity {
 
-	private static final long serialVersionUID = 1L;
-
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+
+	@Column(name = "USER_ID")
 	private String userId;
+
+	@Column(name = "NAME")
 	private String name;
+
+	@Column(name = "PASSWORD")
 	private String password;
+
+	@Column(name = "EMAIL")
 	private String email;
+
+	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
+
+	@Column(name = "ACCESS_TYPES")
+	@ElementCollection
 	private List<AccessType> accessTypes;
-
-	public User() {
-		super();
-	}
-
-	/**
-	 * @param id
-	 * @param userId
-	 * @param fullName
-	 * @param password
-	 * @param email
-	 * @param mobileNumber
-	 * @param accessTypes
-	 */
-	public User(int id, String userId, String name, String password, String email, String mobileNumber,
-			List<AccessType> accessTypes) {
-		super();
-		this.id = id;
-		this.userId = userId;
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.mobileNumber = mobileNumber;
-		this.accessTypes = accessTypes;
-	}
 
 	/**
 	 * @return the id
@@ -142,12 +136,6 @@ public class User implements Serializable {
 	 */
 	public void setAccessTypes(List<AccessType> accessTypes) {
 		this.accessTypes = accessTypes;
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", userId=" + userId + ", name=" + name + ", password=" + password + ", email="
-				+ email + ", mobileNumber=" + mobileNumber + ", accessTypes=" + accessTypes + "]";
 	}
 
 }

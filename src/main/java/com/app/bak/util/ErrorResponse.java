@@ -1,31 +1,17 @@
-package com.app.bak.model;
+package com.app.bak.util;
 
-import java.io.Serializable;
+public class ErrorResponse {
 
-/**
- * @author anilb
- *
- */
-public class ResponseStatus implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	private String message;
 	private String statusCode;
 	private String errorMessage;
 
-	/**
-	 * @return the message
-	 */
-	public String getMessage() {
-		return message;
+	public ErrorResponse() {
 	}
 
-	/**
-	 * @param message the message to set
-	 */
-	public void setMessage(String message) {
-		this.message = message;
+	public ErrorResponse(String statusCode, String errorMessage) {
+		super();
+		this.statusCode = statusCode;
+		this.errorMessage = errorMessage;
 	}
 
 	/**
