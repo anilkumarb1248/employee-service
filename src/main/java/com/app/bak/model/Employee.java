@@ -2,6 +2,7 @@ package com.app.bak.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.app.bak.enums.Gender;
 import com.app.bak.enums.MaritalStatus;
@@ -15,66 +16,40 @@ public class Employee implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private int employeeId;
 	private String firstName;
 	private String middleName;
 	private String lastName;
+
+	private String fatherName;
+	private String motherName;
+	private String gurdianName;
+
 	private Role role;
 	private double salary;
-	private Date dob;
+	private Date dateOfBirth;
 	private Gender gender;
 	private String mobileNumber;
+	private String alternateNumber;
 	private String email;
-	private String address;
+
 	private MaritalStatus maritalStatus;
+	private String spouseName;
 
-	public Employee() {
+	private List<Address> addressList;
+
+	/**
+	 * @return the employeeId
+	 */
+	public int getEmployeeId() {
+		return employeeId;
 	}
 
 	/**
-	 * @param id
-	 * @param firstName
-	 * @param middleName
-	 * @param lastName
-	 * @param role
-	 * @param salary
-	 * @param dob
-	 * @param gender
-	 * @param mobileNumber
-	 * @param email
-	 * @param address
-	 * @param pinCode
-	 * @param maritalStaus
+	 * @param employeeId the employeeId to set
 	 */
-	public Employee(int id, String firstName, String middleName, String lastName, Role role, double salary, Date dob,
-			Gender gender, String mobileNumber, String email, String address, MaritalStatus maritalStatus) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.middleName = middleName;
-		this.lastName = lastName;
-		this.role = role;
-		this.salary = salary;
-		this.dob = dob;
-		this.gender = gender;
-		this.mobileNumber = mobileNumber;
-		this.email = email;
-		this.address = address;
-		this.maritalStatus = maritalStatus;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
 	}
 
 	/**
@@ -120,6 +95,48 @@ public class Employee implements Serializable {
 	}
 
 	/**
+	 * @return the fatherName
+	 */
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	/**
+	 * @param fatherName the fatherName to set
+	 */
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	/**
+	 * @return the motherName
+	 */
+	public String getMotherName() {
+		return motherName;
+	}
+
+	/**
+	 * @param motherName the motherName to set
+	 */
+	public void setMotherName(String motherName) {
+		this.motherName = motherName;
+	}
+
+	/**
+	 * @return the gurdianName
+	 */
+	public String getGurdianName() {
+		return gurdianName;
+	}
+
+	/**
+	 * @param gurdianName the gurdianName to set
+	 */
+	public void setGurdianName(String gurdianName) {
+		this.gurdianName = gurdianName;
+	}
+
+	/**
 	 * @return the role
 	 */
 	public Role getRole() {
@@ -148,17 +165,17 @@ public class Employee implements Serializable {
 	}
 
 	/**
-	 * @return the dob
+	 * @return the dateOfBirth
 	 */
-	public Date getDob() {
-		return dob;
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
 	/**
-	 * @param dob the dob to set
+	 * @param dateOfBirth the dateOfBirth to set
 	 */
-	public void setDob(Date dob) {
-		this.dob = dob;
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	/**
@@ -190,6 +207,20 @@ public class Employee implements Serializable {
 	}
 
 	/**
+	 * @return the alternateNumber
+	 */
+	public String getAlternateNumber() {
+		return alternateNumber;
+	}
+
+	/**
+	 * @param alternateNumber the alternateNumber to set
+	 */
+	public void setAlternateNumber(String alternateNumber) {
+		this.alternateNumber = alternateNumber;
+	}
+
+	/**
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -201,20 +232,6 @@ public class Employee implements Serializable {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
 	}
 
 	/**
@@ -231,56 +248,32 @@ public class Employee implements Serializable {
 		this.maritalStatus = maritalStatus;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());
-		return result;
+	/**
+	 * @return the spouseName
+	 */
+	public String getSpouseName() {
+		return spouseName;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Employee other = (Employee) obj;
-		if (firstName == null) {
-			if (other.firstName != null)
-				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (id != other.id)
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		if (middleName == null) {
-			if (other.middleName != null)
-				return false;
-		} else if (!middleName.equals(other.middleName))
-			return false;
-		return true;
+	/**
+	 * @param spouseName the spouseName to set
+	 */
+	public void setSpouseName(String spouseName) {
+		this.spouseName = spouseName;
+	}
+
+	/**
+	 * @return the addressList
+	 */
+	public List<Address> getAddressList() {
+		return addressList;
+	}
+
+	/**
+	 * @param addressList the addressList to set
+	 */
+	public void setAddressList(List<Address> addressList) {
+		this.addressList = addressList;
 	}
 
 }
-
-//enum Role {
-//	SE, SSE, TA, LEAD, MANAGER, CEO
-//}
-//
-//enum Gender {
-//	Male, Female
-//}
-//
-//enum MaritalStatus {
-//	Married, Unmarried
-//}

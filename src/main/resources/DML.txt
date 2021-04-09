@@ -2,6 +2,10 @@
 
 CREATE USER 'employee' IDENTIFIED BY 'employee';
 
+--- Grant the permissions
+
+grant dba to employee;
+
 ---- Conntect to the user using command prompt
 
 mysql -u employee -p
@@ -13,12 +17,12 @@ CREATE DATABASE  IF NOT EXISTS EMPLOYEE_DATABASE;
 
 USE EMPLOYEE_DATABASE;
 
----- Create tables
+---- Create tables -- It is better to use auto generated tables by spring jpa - lot of changes
 
 DROP TABLE IF EXISTS EMPLOYEE;
 DROP TABLE IF EXISTS USER;
 
--- It is better to use auto generated tables by spring jpa 
+ 
 CREATE TABLE EMPLOYEE(
    ID BIGINT(20) NOT NULL,
    FIRST_NAME VARCHAR(100) NOT NULL,

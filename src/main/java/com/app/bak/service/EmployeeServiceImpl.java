@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.app.bak.entity.AddressEntity;
 import com.app.bak.entity.EmployeeEntity;
 import com.app.bak.exceptions.DuplicateEmployeeException;
 import com.app.bak.exceptions.EmployeeNotFoundException;
+import com.app.bak.model.Address;
 import com.app.bak.model.Employee;
 import com.app.bak.repository.EmployeeRepository;
 import com.app.bak.util.ResponseStatus;
@@ -24,108 +26,153 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public List<Employee> getEmployeeList() {
+
 		List<EmployeeEntity> entitiesList = employeeRepository.findAll();
-
 		List<Employee> employeesList = new ArrayList<>();
-
-		entitiesList.stream().forEach(emp -> {
-			Employee employee = new Employee();
-			BeanUtils.copyProperties(emp, employee);
-			employeesList.add(employee);
+		entitiesList.stream().forEach(employeeEntity -> {
+			employeesList.add(convertToBean(employeeEntity));
 		});
 		return employeesList;
-
 	}
 
 	@Override
-	public Employee getEmployee(int id) {
-		Optional<EmployeeEntity> optional = employeeRepository.findById(id);
+	public Employee getEmployee(int employeeId) {
+
+		Optional<EmployeeEntity> optional = employeeRepository.findById(employeeId);
 		if (!optional.isPresent()) {
-			throw new EmployeeNotFoundException("No employee found with id:" + id);
+			throw new EmployeeNotFoundException("No employee found with id:" + employeeId);
 		}
 
 		EmployeeEntity employeeEntity = optional.get();
-		Employee employee = new Employee();
-		BeanUtils.copyProperties(employeeEntity, employee);
-
-		return employee;
-
+		return convertToBean(employeeEntity);
 	}
 
 	@Override
 	public ResponseStatus addEmployee(Employee employee) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<EmployeeEntity> optional = employeeRepository.findByFirstName(employee.getFirstName());
-		if (optional.isPresent()) {
+
+		if (isDuplicateEmployee(true, employee)) {
 			throw new DuplicateEmployeeException("Employee already exist with name: " + employee.getFirstName());
 		}
 
-		EmployeeEntity employeeEntity = new EmployeeEntity();
-		BeanUtils.copyProperties(employee, employeeEntity);
-		EmployeeEntity emp = employeeRepository.save(employeeEntity);
+		EmployeeEntity emp = employeeRepository.save(convertToEntity(employee));
+
 		if (null != emp) {
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.CREATED.value()));
-			responseStatus.setMessage("Employee added successfully");
+			return createResponseStatus(HttpStatus.CREATED, "Employee added successfully");
 		} else {
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.UNPROCESSABLE_ENTITY.value())); // UNPROCESSABLE_ENTITY - 422
-			responseStatus.setMessage("Failed to add Employee");
+			return createResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY, "Failed to add Employee");
 		}
-		return responseStatus;
 	}
 
 	@Override
 	public ResponseStatus addEmployees(List<Employee> employees) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		List<EmployeeEntity> employeeEntities = new ArrayList<>();
-		employees.stream().forEach(emp -> {
-			EmployeeEntity employeeEntity = new EmployeeEntity();
-			BeanUtils.copyProperties(emp, employeeEntity);
-			employeeEntities.add(employeeEntity);
-		});
-		employeeRepository.saveAll(employeeEntities);
-		responseStatus.setStatusCode(String.valueOf(HttpStatus.CREATED.value()));
-		responseStatus.setMessage("Successfully employees are added");
 
-		return responseStatus;
+		List<EmployeeEntity> employeeEntities = new ArrayList<>();
+
+		employees.stream().forEach(employee -> {
+			if (!isDuplicateEmployee(true, employee)) {
+				employeeEntities.add(convertToEntity(employee));
+			}
+		});
+
+		if (!employeeEntities.isEmpty()) {
+			employeeRepository.saveAll(employeeEntities);
+		}
+
+		return createResponseStatus(HttpStatus.CREATED, "Employees added successfully");
 	}
 
 	@Override
 	public ResponseStatus updateEmployee(Employee employee) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<EmployeeEntity> optional = employeeRepository.findById(employee.getId());
-		if (optional.isPresent()) {
-			Optional<EmployeeEntity> duplicateOptional = employeeRepository.findByFirstName(employee.getFirstName());
-			if (duplicateOptional.isPresent()) {
-				EmployeeEntity duplicateEntity = duplicateOptional.get();
-				if (duplicateEntity.getId() != employee.getId()) {
-					throw new DuplicateEmployeeException(
-							"Employee already exist with name: " + employee.getFirstName());
-				}
+
+		if (isEmployeeExist(employee.getEmployeeId())) {
+			if (isDuplicateEmployee(false, employee)) {
+				throw new DuplicateEmployeeException("Employee already exist with name: " + employee.getFirstName());
 			}
 
-			EmployeeEntity employeeEntity = optional.get();
-			BeanUtils.copyProperties(employee, employeeEntity);
-			employeeRepository.save(employeeEntity);
+			employeeRepository.save(convertToEntity(employee));
 
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.OK.value()));
-			responseStatus.setMessage("Employee updated successfully");
+			return createResponseStatus(HttpStatus.OK, "Employees updated successfully");
+
 		} else {
-			throw new EmployeeNotFoundException("No employee found with id: " + employee.getId());
+			throw new EmployeeNotFoundException("No employee found with id: " + employee.getEmployeeId());
 		}
-		return responseStatus;
 	}
 
 	@Override
-	public ResponseStatus deleteEmployee(int id) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<EmployeeEntity> optional = employeeRepository.findById(id);
-		if (optional.isPresent()) {
-			employeeRepository.deleteById(id);
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.OK.value()));
-			responseStatus.setMessage("Employee deleted successfully");
+	public ResponseStatus deleteEmployee(int employeeId) {
+
+		if (isEmployeeExist(employeeId)) {
+			employeeRepository.deleteById(employeeId);
+
+			return createResponseStatus(HttpStatus.OK, "Employees deleted successfully");
 		} else {
-			throw new EmployeeNotFoundException("No employee found with id: " + id);
+			throw new EmployeeNotFoundException("No employee found with id: " + employeeId);
 		}
-		return responseStatus;
 	}
+
+	private Employee convertToBean(EmployeeEntity employeeEntity) {
+		Employee employee = new Employee();
+
+		BeanUtils.copyProperties(employeeEntity, employee);
+		List<AddressEntity> addressEntityList = employeeEntity.getAddressList();
+
+		if (null != addressEntityList && !addressEntityList.isEmpty()) {
+			List<Address> addressList = new ArrayList<>();
+
+			addressEntityList.forEach(addressEntity -> {
+				Address address = new Address();
+				BeanUtils.copyProperties(addressEntity, address);
+				addressList.add(address);
+			});
+			employee.setAddressList(addressList);
+		}
+		return employee;
+	}
+
+	private EmployeeEntity convertToEntity(Employee employee) {
+		EmployeeEntity employeeEntity = new EmployeeEntity();
+
+		BeanUtils.copyProperties(employee, employeeEntity);
+
+		List<Address> addressList = employee.getAddressList();
+
+		if (null != addressList && !addressList.isEmpty()) {
+			List<AddressEntity> addressEntityList = new ArrayList<>();
+			addressList.forEach(address -> {
+				AddressEntity addressEntity = new AddressEntity();
+				BeanUtils.copyProperties(address, addressEntity);
+				addressEntityList.add(addressEntity);
+			});
+			employeeEntity.setAddressList(addressEntityList);
+		}
+		return employeeEntity;
+	}
+
+	private ResponseStatus createResponseStatus(HttpStatus httpStatus, String message) {
+		ResponseStatus responseStatus = new ResponseStatus();
+		responseStatus.setStatusCode(String.valueOf(httpStatus.value()));
+		responseStatus.setMessage(message);
+		return responseStatus;
+
+	}
+
+	private boolean isDuplicateEmployee(boolean newFlag, Employee employee) {
+
+		Optional<EmployeeEntity> optional = employeeRepository.findByFirstName(employee.getFirstName());
+		if (!optional.isPresent()) {
+			return false;
+		} else {
+			EmployeeEntity duplicateEntity = optional.get();
+			if (newFlag || duplicateEntity.getEmployeeId() != employee.getEmployeeId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isEmployeeExist(int id) {
+		Optional<EmployeeEntity> optional = employeeRepository.findById(id);
+		return optional.isPresent();
+	}
+
 }

@@ -9,7 +9,7 @@ public interface EmployeeService {
 	
 	public List<Employee> getEmployeeList();
 
-	public Employee getEmployee(int id);
+	public Employee getEmployee(int employeeId);
 
 	public ResponseStatus addEmployee(Employee employee);
 	
@@ -17,6 +17,6 @@ public interface EmployeeService {
 
 	public ResponseStatus updateEmployee(Employee employee);
 
-	public ResponseStatus deleteEmployee(int id);
+	public ResponseStatus deleteEmployee(int employeeId);
 	
 }

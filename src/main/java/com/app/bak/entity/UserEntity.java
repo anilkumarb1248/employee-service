@@ -1,5 +1,6 @@
 package com.app.bak.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -8,17 +9,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.app.bak.enums.AccessType;
 
 @Entity
 @Table(name = "USER")
-public class UserEntity {
+public class UserEntity  implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name = "ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "USER_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
 	private int id;
 
 	@Column(name = "USER_ID")
@@ -36,8 +43,9 @@ public class UserEntity {
 	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
 
-	@Column(name = "ACCESS_TYPES")
+//	@Column(name = "ACCESS_TYPES")
 	@ElementCollection
+	@JoinTable(name="ACCESS_TYPES")
 	private List<AccessType> accessTypes;
 
 	/**

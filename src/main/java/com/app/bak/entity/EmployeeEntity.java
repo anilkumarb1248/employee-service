@@ -1,7 +1,10 @@
 package com.app.bak.entity;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.app.bak.enums.Gender;
@@ -17,12 +23,16 @@ import com.app.bak.enums.Role;
 
 @Entity
 @Table(name = "EMPLOYEE")
-public class EmployeeEntity {
+public class EmployeeEntity  implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
-	@Column(name = "ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	@Column(name = "EMPLOYEE_ID")
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(initialValue = 1, name = "emp_seq", sequenceName = "EMPLOYEE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emp_seq")
+	private int employeeId;
 
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -33,6 +43,15 @@ public class EmployeeEntity {
 	@Column(name = "LAST_NAME")
 	private String lastName;
 
+	@Column(name = "FATHER_NAME")
+	private String fatherName;
+
+	@Column(name = "MOTHER_NAME")
+	private String motherName;
+
+	@Column(name = "GURDIAN_NAME")
+	private String gurdianName;
+
 	@Column(name = "ROLE")
 	@Enumerated(EnumType.STRING)
 	private Role role;
@@ -40,8 +59,8 @@ public class EmployeeEntity {
 	@Column(name = "SALARY")
 	private double salary;
 
-	@Column(name = "DOB")
-	private Date dob;
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
 
 	@Column(name = "GENDER")
 	@Enumerated(EnumType.STRING)
@@ -50,28 +69,35 @@ public class EmployeeEntity {
 	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
 
+	@Column(name = "ALTERNATE_NUMBER")
+	private String alternateNumber;
+
 	@Column(name = "EMAIL")
 	private String email;
-
-	@Column(name = "ADDRESS")
-	private String address;
 
 	@Column(name = "MARITAL_STATUS")
 	@Enumerated(EnumType.STRING)
 	private MaritalStatus maritalStatus;
 
+	@Column(name = "SPOUSE_NAME")
+	private String spouseName;
+
+	@OneToMany(targetEntity = AddressEntity.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "EMPLOYEE_REF_ID", referencedColumnName = "EMPLOYEE_ID")
+	private List<AddressEntity> addressList;
+
 	/**
-	 * @return the id
+	 * @return the employeeId
 	 */
-	public int getId() {
-		return id;
+	public int getEmployeeId() {
+		return employeeId;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param employeeId the employeeId to set
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
 	}
 
 	/**
@@ -117,6 +143,48 @@ public class EmployeeEntity {
 	}
 
 	/**
+	 * @return the fatherName
+	 */
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	/**
+	 * @param fatherName the fatherName to set
+	 */
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	/**
+	 * @return the motherName
+	 */
+	public String getMotherName() {
+		return motherName;
+	}
+
+	/**
+	 * @param motherName the motherName to set
+	 */
+	public void setMotherName(String motherName) {
+		this.motherName = motherName;
+	}
+
+	/**
+	 * @return the gurdianName
+	 */
+	public String getGurdianName() {
+		return gurdianName;
+	}
+
+	/**
+	 * @param gurdianName the gurdianName to set
+	 */
+	public void setGurdianName(String gurdianName) {
+		this.gurdianName = gurdianName;
+	}
+
+	/**
 	 * @return the role
 	 */
 	public Role getRole() {
@@ -145,17 +213,17 @@ public class EmployeeEntity {
 	}
 
 	/**
-	 * @return the dob
+	 * @return the dateOfBirth
 	 */
-	public Date getDob() {
-		return dob;
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
 	/**
-	 * @param dob the dob to set
+	 * @param dateOfBirth the dateOfBirth to set
 	 */
-	public void setDob(Date dob) {
-		this.dob = dob;
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	/**
@@ -187,6 +255,20 @@ public class EmployeeEntity {
 	}
 
 	/**
+	 * @return the alternateNumber
+	 */
+	public String getAlternateNumber() {
+		return alternateNumber;
+	}
+
+	/**
+	 * @param alternateNumber the alternateNumber to set
+	 */
+	public void setAlternateNumber(String alternateNumber) {
+		this.alternateNumber = alternateNumber;
+	}
+
+	/**
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -201,20 +283,6 @@ public class EmployeeEntity {
 	}
 
 	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	/**
 	 * @return the maritalStatus
 	 */
 	public MaritalStatus getMaritalStatus() {
@@ -226,6 +294,34 @@ public class EmployeeEntity {
 	 */
 	public void setMaritalStatus(MaritalStatus maritalStatus) {
 		this.maritalStatus = maritalStatus;
+	}
+
+	/**
+	 * @return the spouseName
+	 */
+	public String getSpouseName() {
+		return spouseName;
+	}
+
+	/**
+	 * @param spouseName the spouseName to set
+	 */
+	public void setSpouseName(String spouseName) {
+		this.spouseName = spouseName;
+	}
+
+	/**
+	 * @return the addressList
+	 */
+	public List<AddressEntity> getAddressList() {
+		return addressList;
+	}
+
+	/**
+	 * @param addressList the addressList to set
+	 */
+	public void setAddressList(List<AddressEntity> addressList) {
+		this.addressList = addressList;
 	}
 
 }

@@ -1,8 +1,8 @@
 package com.app.bak.enums;
 
 public enum Gender {
-	
-	MALE("Male"), FEMALE("Female");
+
+	MALE("Male"), FEMALE("Female"), TRANSGENDER("Transgender");
 
 	private String gender;
 

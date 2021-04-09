@@ -9,30 +9,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.app.bak.enums.AccessType;
+import com.app.bak.exceptions.DuplicateUserException;
 import com.app.bak.model.User;
 import com.app.bak.service.UserService;
 import com.app.bak.util.ResponseStatus;
 
 @Component
 public class AdminUserCreator {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminUserCreator.class);
 
 	@Autowired
 	UserService userService;
 
+	/**
+	 * Creating Admin user to login in Application UI with userid: admin, pwd: admin
+	 */
 	public void createAdminUser() {
-		List<AccessType> accessTypes = new ArrayList<>();
-		accessTypes.add(AccessType.ADMIN);
 
-		User user = new User(1, "admin", "Admin", "admin", "admin@gmail.com", "9700346588", accessTypes);
-		ResponseStatus responseStatus = userService.addUser(user);
-		if("201".equals(responseStatus.getStatusCode())) {
-			LOGGER.info("Admin user added successfully");
-		}else {
-			LOGGER.error("Failied to add Admin user");
+		try {
+			List<AccessType> accessTypes = new ArrayList<>();
+			accessTypes.add(AccessType.ADMIN);
+
+			User user = new User(1, "admin", "Admin", "admin", "admin@gmail.com", "9700346588", accessTypes);
+			ResponseStatus responseStatus = userService.addUser(user);
+			if ("201".equals(responseStatus.getStatusCode())) {
+				LOGGER.info("Admin user added successfully");
+			} else {
+				LOGGER.error("Failied to add Admin user");
+			}
+		} catch (DuplicateUserException ex) {
+			LOGGER.info("Admin user already existed");
+		} catch (Exception ex) {
+			LOGGER.info("Exception occurred while adding Admin user");
 		}
-		
+
 	}
 
 }

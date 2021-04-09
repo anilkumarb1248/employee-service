@@ -21,8 +21,8 @@ public class EmployeeResourceImpl implements EmployeeResource {
 	}
 
 	@Override
-	public Employee getEmployee(int id) {
-		return employeeService.getEmployee(id);
+	public Employee getEmployee(int employeeId) {
+		return employeeService.getEmployee(employeeId);
 	}
 
 	@Override
@@ -41,8 +41,8 @@ public class EmployeeResourceImpl implements EmployeeResource {
 	}
 
 	@Override
-	public ResponseStatus deleteEmployee(int id) {
-		return employeeService.deleteEmployee(id);
+	public ResponseStatus deleteEmployee(int employeeId) {
+		return employeeService.deleteEmployee(employeeId);
 	}
 
 	@Override

@@ -30,8 +30,8 @@ public interface EmployeeResource {
 	@GetMapping({"/list","/all","/employees"})
 	public List<Employee> getEmployeeList();
 
-	@GetMapping("/get/{id}")
-	public Employee getEmployee(@PathVariable(value="id") int id);
+	@GetMapping("/get/{employeeId}")
+	public Employee getEmployee(@PathVariable(value="employeeId") int employeeId);
 
 	@PostMapping("/add")
 	public ResponseStatus addEmployee(@RequestBody Employee employee);
@@ -42,8 +42,8 @@ public interface EmployeeResource {
 	@PutMapping("/update")
 	public ResponseStatus updateEmployee(@RequestBody Employee employee);
 
-	@DeleteMapping("/delete/{id}")
-	public ResponseStatus deleteEmployee(@PathVariable int id);
+	@DeleteMapping("/delete/{employeeId}")
+	public ResponseStatus deleteEmployee(@PathVariable int employeeId);
 	
 	@GetMapping("/findByName")
 	public Employee findEmployee(@RequestParam String name);
