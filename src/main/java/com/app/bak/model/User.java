@@ -1,9 +1,8 @@
 package com.app.bak.model;
 
 import java.io.Serializable;
-import java.util.List;
 
-import com.app.bak.enums.AccessType;
+import com.app.bak.enums.UserRole;
 
 /**
  * @author anilb
@@ -14,37 +13,15 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
-	private String userId;
-	private String name;
+	private String userName;
 	private String password;
 	private String email;
 	private String mobileNumber;
-	private List<AccessType> accessTypes;
-
-	public User() {
-		super();
-	}
-
-	/**
-	 * @param id
-	 * @param userId
-	 * @param fullName
-	 * @param password
-	 * @param email
-	 * @param mobileNumber
-	 * @param accessTypes
-	 */
-	public User(int id, String userId, String name, String password, String email, String mobileNumber,
-			List<AccessType> accessTypes) {
-		super();
-		this.id = id;
-		this.userId = userId;
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.mobileNumber = mobileNumber;
-		this.accessTypes = accessTypes;
-	}
+	private UserRole userRole;
+	private boolean accountExpired;
+	private boolean accountLocked;
+	private boolean credentialsExpired;
+	private boolean active;
 
 	/**
 	 * @return the id
@@ -61,31 +38,17 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return the userId
+	 * @return the userName
 	 */
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param userName the userName to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -131,23 +94,81 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return the accessTypes
+	 * @return the userRole
 	 */
-	public List<AccessType> getAccessTypes() {
-		return accessTypes;
+	public UserRole getUserRole() {
+		return userRole;
 	}
 
 	/**
-	 * @param accessTypes the accessTypes to set
+	 * @param userRole the userRole to set
 	 */
-	public void setAccessTypes(List<AccessType> accessTypes) {
-		this.accessTypes = accessTypes;
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+	}
+
+	/**
+	 * @return the accountExpired
+	 */
+	public boolean isAccountExpired() {
+		return accountExpired;
+	}
+
+	/**
+	 * @param accountExpired the accountExpired to set
+	 */
+	public void setAccountExpired(boolean accountExpired) {
+		this.accountExpired = accountExpired;
+	}
+
+	/**
+	 * @return the accountLocked
+	 */
+	public boolean isAccountLocked() {
+		return accountLocked;
+	}
+
+	/**
+	 * @param accountLocked the accountLocked to set
+	 */
+	public void setAccountLocked(boolean accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	/**
+	 * @return the credentialsExpired
+	 */
+	public boolean isCredentialsExpired() {
+		return credentialsExpired;
+	}
+
+	/**
+	 * @param credentialsExpired the credentialsExpired to set
+	 */
+	public void setCredentialsExpired(boolean credentialsExpired) {
+		this.credentialsExpired = credentialsExpired;
+	}
+
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userId=" + userId + ", name=" + name + ", password=" + password + ", email="
-				+ email + ", mobileNumber=" + mobileNumber + ", accessTypes=" + accessTypes + "]";
+		return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email
+				+ ", mobileNumber=" + mobileNumber + ", userRole=" + userRole + ", accountExpired=" + accountExpired
+				+ ", accountLocked=" + accountLocked + ", credentialsExpired=" + credentialsExpired + ", active="
+				+ active + "]";
 	}
 
 }

@@ -8,6 +8,8 @@ import com.app.bak.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Integer>{
 
-	Optional<UserEntity> findByUserId(String userId);
+	Optional<UserEntity> findByUserName(String userName);
+
+	void deleteByUserName(String userName);
 
 }

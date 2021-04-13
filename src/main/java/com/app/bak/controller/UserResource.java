@@ -24,8 +24,8 @@ public interface UserResource {
 	@GetMapping("/get/{id}")
 	public User getUser(@PathVariable int id);
 
-	@GetMapping("/getUserByUserId/{userId}")
-	public User getUserByUserId(@PathVariable String userId);
+	@GetMapping("/getUserByUserName/{userName}")
+	public User getUserByUserName(@PathVariable String userName);
 
 	@PostMapping("/add")
 	public ResponseStatus addUser(@RequestBody User user);
@@ -35,5 +35,8 @@ public interface UserResource {
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseStatus deleteUser(@PathVariable int id);
+	
+	@DeleteMapping("/deleteUserByUserName/{userName}")
+	public ResponseStatus deleteUserByUserName(@PathVariable String userName);
 
 }

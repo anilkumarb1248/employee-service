@@ -17,7 +17,7 @@ public class LoginResourceImpl implements LoginResource {
 	@Override
 	public ResponseStatus authenticateUser(LoginUser loginUser) {
 		ResponseStatus status = new ResponseStatus();
-		User user = userService.getUserByUserId(loginUser.getUserId());
+		User user = userService.getUserByUserName(loginUser.getUserName());
 		if (null == user) {
 			status.setStatusCode("404");
 			status.setErrorMessage("User not found or Incorrect UserId");

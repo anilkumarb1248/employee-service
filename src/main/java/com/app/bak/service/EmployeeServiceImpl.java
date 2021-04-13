@@ -49,18 +49,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public ResponseStatus addEmployee(Employee employee) {
+		
+		if (!isDuplicateEmployee(true, employee)) {
+			EmployeeEntity emp = employeeRepository.save(convertToEntity(employee));
 
-		if (isDuplicateEmployee(true, employee)) {
+			if (null != emp) {
+				return createResponseStatus(HttpStatus.CREATED, "Employee added successfully");
+			} else {
+				return createResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY, "Failed to add Employee");
+			}
+		} else {
 			throw new DuplicateEmployeeException("Employee already exist with name: " + employee.getFirstName());
 		}
 
-		EmployeeEntity emp = employeeRepository.save(convertToEntity(employee));
-
-		if (null != emp) {
-			return createResponseStatus(HttpStatus.CREATED, "Employee added successfully");
-		} else {
-			return createResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY, "Failed to add Employee");
-		}
 	}
 
 	@Override
@@ -153,7 +154,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		responseStatus.setStatusCode(String.valueOf(httpStatus.value()));
 		responseStatus.setMessage(message);
 		return responseStatus;
-
 	}
 
 	private boolean isDuplicateEmployee(boolean newFlag, Employee employee) {

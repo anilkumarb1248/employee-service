@@ -1,26 +1,25 @@
 package com.app.bak.entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.app.bak.enums.AccessType;
+import com.app.bak.enums.UserRole;
 
 @Entity
 @Table(name = "USER")
-public class UserEntity  implements Serializable{
+public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name = "ID")
 //	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,11 +27,8 @@ public class UserEntity  implements Serializable{
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
 	private int id;
 
-	@Column(name = "USER_ID")
-	private String userId;
-
-	@Column(name = "NAME")
-	private String name;
+	@Column(name = "USER_NAME")
+	private String userName;
 
 	@Column(name = "PASSWORD")
 	private String password;
@@ -43,10 +39,21 @@ public class UserEntity  implements Serializable{
 	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
 
-//	@Column(name = "ACCESS_TYPES")
-	@ElementCollection
-	@JoinTable(name="ACCESS_TYPES")
-	private List<AccessType> accessTypes;
+	@Column(name = "USER_ROLE")
+	@Enumerated(EnumType.STRING)
+	private UserRole userRole;
+
+	@Column(name = "ACCOUNT_EXPIRED_FLAG")
+	private boolean accountExpired;
+
+	@Column(name = "ACCOUNT_LOCKED_FLAG")
+	private boolean accountLocked;
+
+	@Column(name = "CREDENTIALS_EXPIRED_FLAG")
+	private boolean credentialsExpired;
+
+	@Column(name = "ACTIVE_FLAG")
+	private boolean active;
 
 	/**
 	 * @return the id
@@ -63,31 +70,17 @@ public class UserEntity  implements Serializable{
 	}
 
 	/**
-	 * @return the userId
+	 * @return the userName
 	 */
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param userName the userName to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -133,17 +126,73 @@ public class UserEntity  implements Serializable{
 	}
 
 	/**
-	 * @return the accessTypes
+	 * @return the userRole
 	 */
-	public List<AccessType> getAccessTypes() {
-		return accessTypes;
+	public UserRole getUserRole() {
+		return userRole;
 	}
 
 	/**
-	 * @param accessTypes the accessTypes to set
+	 * @param userRole the userRole to set
 	 */
-	public void setAccessTypes(List<AccessType> accessTypes) {
-		this.accessTypes = accessTypes;
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+	}
+
+	/**
+	 * @return the accountExpired
+	 */
+	public boolean isAccountExpired() {
+		return accountExpired;
+	}
+
+	/**
+	 * @param accountExpired the accountExpired to set
+	 */
+	public void setAccountExpired(boolean accountExpired) {
+		this.accountExpired = accountExpired;
+	}
+
+	/**
+	 * @return the accountLocked
+	 */
+	public boolean isAccountLocked() {
+		return accountLocked;
+	}
+
+	/**
+	 * @param accountLocked the accountLocked to set
+	 */
+	public void setAccountLocked(boolean accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	/**
+	 * @return the credentialsExpired
+	 */
+	public boolean isCredentialsExpired() {
+		return credentialsExpired;
+	}
+
+	/**
+	 * @param credentialsExpired the credentialsExpired to set
+	 */
+	public void setCredentialsExpired(boolean credentialsExpired) {
+		this.credentialsExpired = credentialsExpired;
+	}
+
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }

@@ -11,12 +11,14 @@ public interface UserService {
 
 	public User getUser(int id);
 	
-	public User getUserByUserId(String userId);
+	public User getUserByUserName(String userName);
 
 	public ResponseStatus addUser(User user);
 
 	public ResponseStatus updateUser(User user);
 
 	public ResponseStatus deleteUser(int id);
+	
+	public ResponseStatus deleteUserByUsername(String userName);
 
 }

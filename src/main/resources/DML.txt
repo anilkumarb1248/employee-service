@@ -4,7 +4,7 @@ CREATE USER 'employee' IDENTIFIED BY 'employee';
 
 --- Grant the permissions
 
-grant dba to employee;
+	GRANT ALL PRIVILEGES ON EMPLOYEE_DATABASE.* TO 'employee'@'localhost';
 
 ---- Conntect to the user using command prompt
 

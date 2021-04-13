@@ -10,22 +10,22 @@ public class LoginUser implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userId;
+	private String userName;
 	private String password;
 	private boolean keepLogin;
 
 	/**
-	 * @return the userId
+	 * @return the userName
 	 */
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param userName the userName to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class LoginUser implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Login [userId=" + userId + ", password=" + password + ", keepLogin=" + keepLogin + "]";
+		return "LoginUser [userName=" + userName + ", password=" + password + ", keepLogin=" + keepLogin + "]";
 	}
 
 }

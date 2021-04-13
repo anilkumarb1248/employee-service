@@ -1,14 +1,11 @@
 package com.app.bak;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.app.bak.enums.AccessType;
+import com.app.bak.enums.UserRole;
 import com.app.bak.exceptions.DuplicateUserException;
 import com.app.bak.model.User;
 import com.app.bak.service.UserService;
@@ -28,10 +25,17 @@ public class AdminUserCreator {
 	public void createAdminUser() {
 
 		try {
-			List<AccessType> accessTypes = new ArrayList<>();
-			accessTypes.add(AccessType.ADMIN);
+			User user = new User();
+			user.setUserName("admin");
+			user.setPassword("admin");
+			user.setEmail("admin@gmail.com");
+			user.setMobileNumber("9700346588");
+			user.setUserRole(UserRole.ADMIN);
+			user.setActive(true);
+			user.setAccountExpired(false);
+			user.setAccountLocked(false);
+			user.setCredentialsExpired(false);
 
-			User user = new User(1, "admin", "Admin", "admin", "admin@gmail.com", "9700346588", accessTypes);
 			ResponseStatus responseStatus = userService.addUser(user);
 			if ("201".equals(responseStatus.getStatusCode())) {
 				LOGGER.info("Admin user added successfully");

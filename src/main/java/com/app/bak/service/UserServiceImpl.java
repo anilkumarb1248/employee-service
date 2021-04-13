@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.bak.entity.UserEntity;
 import com.app.bak.exceptions.DuplicateUserException;
-import com.app.bak.exceptions.EmployeeNotFoundException;
 import com.app.bak.exceptions.UserNotFoundException;
 import com.app.bak.model.User;
 import com.app.bak.repository.UserRepository;
@@ -30,9 +29,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = new ArrayList<>();
 
 		entities.stream().forEach(entity -> {
-			User user = new User();
-			BeanUtils.copyProperties(entity, user);
-			users.add(user);
+			users.add(convertToBean(entity));
 		});
 		return users;
 	}
@@ -41,89 +38,117 @@ public class UserServiceImpl implements UserService {
 	public User getUser(int id) {
 		Optional<UserEntity> optional = userRepository.findById(id);
 		if (optional.isPresent()) {
-			UserEntity entity = optional.get();
-			User user = new User();
-			BeanUtils.copyProperties(entity, user);
-			return user;
+			return convertToBean(optional.get());
 		} else {
 			throw new UserNotFoundException("User not found with id: " + id);
 		}
 	}
 
 	@Override
-	public User getUserByUserId(String userId) {
-		Optional<UserEntity> optional = userRepository.findByUserId(userId);
+	public User getUserByUserName(String userName) {
+		Optional<UserEntity> optional = userRepository.findByUserName(userName);
 		if (optional.isPresent()) {
-			UserEntity entity = optional.get();
-			User user = new User();
-			BeanUtils.copyProperties(entity, user);
-			return user;
+			return convertToBean(optional.get());
 		} else {
-			throw new UserNotFoundException("User not found with userId: " + userId);
+			throw new UserNotFoundException("User not found with user name: " + userName);
 		}
 	}
 
 	@Override
 	public ResponseStatus addUser(User user) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<UserEntity> optional = userRepository.findByUserId(user.getUserId());
-		if (optional.isPresent()) {
-			throw new DuplicateUserException("User already exist with userid: " + user.getUserId());
-		}
 
-		UserEntity entity = new UserEntity();
-		BeanUtils.copyProperties(user, entity);
-		UserEntity userEntity = userRepository.save(entity);
+		if (!isDuplicateUser(true, user)) {
+			UserEntity userEntity = userRepository.save(convertToEntity(user));
 
-		if (null != userEntity) {
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.CREATED.value()));
-			responseStatus.setMessage("User added successfully");
+			if (null != userEntity) {
+				return createResponseStatus(HttpStatus.CREATED, "User added successfully");
+			} else {
+				return createResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY, "Failed to add User");
+			}
 		} else {
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.UNPROCESSABLE_ENTITY.value())); // UNPROCESSABLE_ENTITY - 422
-			responseStatus.setMessage("Failed to add User");
+			throw new DuplicateUserException("User already exist with user name: " + user.getUserName());
 		}
-		return responseStatus;
 	}
 
 	@Override
 	public ResponseStatus updateUser(User user) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<UserEntity> optional = userRepository.findById(user.getId());
 
-		if (optional.isPresent()) {
-			Optional<UserEntity> duplicateOptional = userRepository.findByUserId(user.getUserId());
-			if (duplicateOptional.isPresent()) {
-				UserEntity duplicateEntity = duplicateOptional.get();
-				if (duplicateEntity.getId() != user.getId()) {
-					throw new DuplicateUserException("User already exist with userId: " + user.getUserId());
-				}
+		if (isUserExist(user.getId())) {
+			if (isDuplicateUser(false, user)) {
+				throw new DuplicateUserException("User already exist with user name: " + user.getUserName());
 			}
 
-			UserEntity userEntity = optional.get();
-			BeanUtils.copyProperties(user, userEntity);
-			userRepository.save(userEntity);
-
-			responseStatus.setStatusCode(String.valueOf(HttpStatus.OK.value()));
-			responseStatus.setMessage("User updated successfully");
+			userRepository.save(convertToEntity(user));
+			return createResponseStatus(HttpStatus.OK, "User updated successfully");
 		} else {
-			throw new EmployeeNotFoundException("No employee found with id: " + user.getId());
+			throw new UserNotFoundException("No user found with id: " + user.getId());
 		}
-		return responseStatus;
 	}
 
 	@Override
 	public ResponseStatus deleteUser(int id) {
-		ResponseStatus responseStatus = new ResponseStatus();
-		Optional<UserEntity> optional = userRepository.findById(id);
-		if (!optional.isPresent()) {
+
+		if (isUserExist(id)) {
+			userRepository.deleteById(id);
+			return createResponseStatus(HttpStatus.OK, "User deleted successfully");
+		} else {
 			throw new UserNotFoundException("No user found with id: " + id);
 		}
+	}
 
-		userRepository.deleteById(id);
-		responseStatus.setStatusCode(String.valueOf(HttpStatus.OK.value()));
-		responseStatus.setMessage("User deleted successfully");
+	@Override
+	public ResponseStatus deleteUserByUsername(String userName) {
 
+		if (isUserExist(userName)) {
+			userRepository.deleteByUserName(userName);
+
+			return createResponseStatus(HttpStatus.OK, "User deleted successfully");
+		} else {
+			throw new UserNotFoundException("No user found with user name: " + userName);
+		}
+	}
+
+	private User convertToBean(UserEntity userEnitity) {
+		User user = new User();
+		BeanUtils.copyProperties(userEnitity, user);
+		return user;
+	}
+
+	private UserEntity convertToEntity(User user) {
+		UserEntity userEnitity = new UserEntity();
+		BeanUtils.copyProperties(user, userEnitity);
+		return userEnitity;
+	}
+
+	private ResponseStatus createResponseStatus(HttpStatus httpStatus, String message) {
+		ResponseStatus responseStatus = new ResponseStatus();
+		responseStatus.setStatusCode(String.valueOf(httpStatus.value()));
+		responseStatus.setMessage(message);
 		return responseStatus;
+	}
+
+	private boolean isDuplicateUser(boolean newFlag, User user) {
+
+		Optional<UserEntity> optional = userRepository.findByUserName(user.getUserName());
+		if (!optional.isPresent()) {
+			return false;
+		} else {
+			UserEntity duplicateEntity = optional.get();
+			if (newFlag || duplicateEntity.getId() != user.getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isUserExist(int id) {
+		Optional<UserEntity> optional = userRepository.findById(id);
+		return optional.isPresent();
+	}
+
+	private boolean isUserExist(String userName) {
+		Optional<UserEntity> optional = userRepository.findByUserName(userName);
+		return optional.isPresent();
 	}
 
 }

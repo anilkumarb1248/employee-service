@@ -26,8 +26,8 @@ public class UserResourceImpl implements UserResource {
 	}
 
 	@Override
-	public User getUserByUserId(String userId) {
-		return userService.getUserByUserId(userId);
+	public User getUserByUserName(String userName) {
+		return userService.getUserByUserName(userName);
 	}
 
 	@Override
@@ -43,6 +43,11 @@ public class UserResourceImpl implements UserResource {
 	@Override
 	public ResponseStatus deleteUser(int id) {
 		return userService.deleteUser(id);
+	}
+
+	@Override
+	public ResponseStatus deleteUserByUserName(String userName) {
+		return userService.deleteUserByUsername(userName);
 	}
 
 }
