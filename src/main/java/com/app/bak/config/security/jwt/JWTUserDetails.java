@@ -1,4 +1,4 @@
-package com.app.bak.config.security;
+package com.app.bak.config.security.jwt;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,11 +7,13 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import com.app.bak.enums.UserRole;
 import com.app.bak.model.User;
 
-public class AppUserDetails implements UserDetails {
+@Service
+public class JWTUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,11 +25,11 @@ public class AppUserDetails implements UserDetails {
 	private boolean accountNonExpired;
 	private boolean accountNonLocked;
 
-	public AppUserDetails() {
+	public JWTUserDetails() {
 
 	}
 
-	public AppUserDetails(User user) {
+	public JWTUserDetails(User user) {
 		this.userName = user.getUserName();
 		this.password = user.getPassword();
 		this.enabled = user.isActive();

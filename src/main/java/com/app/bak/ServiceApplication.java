@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ServiceApplication implements ApplicationRunner {
 
 	@Autowired
-	AdminUserCreator adminUserCreator;
+	UsersCreator userCreator;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceApplication.class, args);
@@ -18,7 +18,7 @@ public class ServiceApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		adminUserCreator.createAdminUser();
+		userCreator.createUsers();
 	}
 
 }

@@ -151,4 +151,15 @@ public class UserServiceImpl implements UserService {
 		return optional.isPresent();
 	}
 
+	@Override
+	public boolean checkUserAlreadyExist(Integer id, String userName) {
+		if(null != id) {
+			return isUserExist(Integer.valueOf(id));
+		}
+		if(null != userName || !"".equals(userName)) {
+			return isUserExist(userName);
+		}
+		return false;
+	}
+
 }

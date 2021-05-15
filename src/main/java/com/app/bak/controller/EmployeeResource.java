@@ -16,7 +16,8 @@ import com.app.bak.model.Employee;
 import com.app.bak.util.ResponseStatus;
 
 @RequestMapping("/employee")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public interface EmployeeResource {
 
 	/*
