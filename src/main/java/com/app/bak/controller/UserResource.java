@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.app.bak.model.User;
 import com.app.bak.util.ResponseStatus;
 
+
+//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
+//@RolesAllowed("ADMIN")
+//@Secured("ADMIN") // it works with only @EnableGlobalMethodSecurity(secureEnabled = true) in config
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:4200")
 public interface UserResource {
 
 	@GetMapping({ "/list", "/all", "/users" })

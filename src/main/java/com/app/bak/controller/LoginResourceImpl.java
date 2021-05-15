@@ -17,6 +17,7 @@ public class LoginResourceImpl implements LoginResource {
 	@Override
 	public ResponseStatus authenticateUser(LoginUser loginUser) {
 		ResponseStatus status = new ResponseStatus();
+
 		User user = userService.getUserByUserName(loginUser.getUserName());
 		if (null == user) {
 			status.setStatusCode("404");
@@ -30,6 +31,14 @@ public class LoginResourceImpl implements LoginResource {
 				status.setErrorMessage("Incorrect Password");
 			}
 		}
+		return status;
+	}
+
+	@Override
+	public ResponseStatus logoutUser(LoginUser loginUser) {
+		ResponseStatus status = new ResponseStatus();
+		status.setStatusCode("200");
+		status.setMessage("User Exist");
 		return status;
 	}
 

@@ -1,4 +1,4 @@
-package com.app.bak.config.security;
+package com.app.bak.config.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.app.bak.model.User;
 import com.app.bak.service.UserService;
 
-@Service
-public class UserDetailsServiceImpl implements UserDetailsService {
-
+@Service("jwtUDService")
+public class JwtUserDetailsService  implements UserDetailsService{
+	
 	@Autowired
 	UserService userService;
 
@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		if (user == null) {
 			throw new UsernameNotFoundException(username);
 		}
-		AppUserDetails myUserDetails = new AppUserDetails(user);
+		JWTUserDetails myUserDetails = new JWTUserDetails(user);
 		return myUserDetails;
 	}
 
