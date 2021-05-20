@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "employees", key = "#employeeId")
 	public Employee getEmployee(int employeeId) {
 
 		Optional<EmployeeEntity> optional = employeeRepository.findById(employeeId);
@@ -100,6 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "employees", key = "#employeeId")
 	public ResponseStatus deleteEmployee(int employeeId) {
 
 		if (isEmployeeExist(employeeId)) {

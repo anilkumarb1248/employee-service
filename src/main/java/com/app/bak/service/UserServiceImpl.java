@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
 	UserRepository userRepository;
 
 	@Override
+//	@Cacheable(cacheNames = "users",key = "usersList")
 	public List<User> getUserList() {
 		List<UserEntity> entities = userRepository.findAll();
 
@@ -35,6 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "users", key = "#id")
 	public User getUser(int id) {
 		Optional<UserEntity> optional = userRepository.findById(id);
 		if (optional.isPresent()) {
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "users", key = "#userName")
 	public User getUserByUserName(String userName) {
 		Optional<UserEntity> optional = userRepository.findByUserName(userName);
 		if (optional.isPresent()) {
@@ -71,6 +77,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+//	@CachePut(cacheNames = "users", key = "#user.id")// It wont works because return type is different. user data will be updated by status
 	public ResponseStatus updateUser(User user) {
 
 		if (isUserExist(user.getId())) {
@@ -86,6 +93,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@CacheEvict(cacheNames = "users", key = "#id")
 	public ResponseStatus deleteUser(int id) {
 
 		if (isUserExist(id)) {
@@ -153,13 +161,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean checkUserAlreadyExist(Integer id, String userName) {
-		if(null != id) {
+		if (null != id) {
 			return isUserExist(Integer.valueOf(id));
 		}
-		if(null != userName || !"".equals(userName)) {
+		if (null != userName || !"".equals(userName)) {
 			return isUserExist(userName);
 		}
 		return false;
 	}
 
 }
+
+
+
