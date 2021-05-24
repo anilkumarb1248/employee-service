@@ -21,6 +21,11 @@ public class EmployeeResourceImpl implements EmployeeResource {
 	}
 
 	@Override
+	public List<Employee> getEmployeesByPagination(int pageNumber, int pageSize, String sortOrder, String sortingBy) {
+		return employeeService.getEmployeesByPagination(pageNumber, pageSize, sortOrder, sortingBy);
+	}
+
+	@Override
 	public Employee getEmployee(int employeeId) {
 		return employeeService.getEmployee(employeeId);
 	}
@@ -46,9 +51,18 @@ public class EmployeeResourceImpl implements EmployeeResource {
 	}
 
 	@Override
-	public Employee findEmployee(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseStatus deleteAll() {
+		return employeeService.deleteAll();
+	}
+
+	@Override
+	public Employee getEmployeeByName(String firstName) {
+		return employeeService.getEmployeeByName(firstName);
+	}
+
+	@Override
+	public boolean addDummyData() {
+		return employeeService.addDummyData();
 	}
 
 }

@@ -30,6 +30,9 @@ public interface EmployeeResource {
 	 */
 	@GetMapping({"/list","/all","/employees"})
 	public List<Employee> getEmployeeList();
+	
+	@GetMapping("/getEmployeesByPagination")
+	public List<Employee> getEmployeesByPagination(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String sortOrder, @RequestParam String sortingBy);
 
 	@GetMapping("/get/{employeeId}")
 	public Employee getEmployee(@PathVariable(value="employeeId") int employeeId);
@@ -46,7 +49,13 @@ public interface EmployeeResource {
 	@DeleteMapping("/delete/{employeeId}")
 	public ResponseStatus deleteEmployee(@PathVariable int employeeId);
 	
+	@DeleteMapping("/deleteAll")
+	public ResponseStatus deleteAll();
+	
 	@GetMapping("/findByName")
-	public Employee findEmployee(@RequestParam String name);
+	public Employee getEmployeeByName(@RequestParam String firstName);
+	
+	@GetMapping("/dummyData")
+	public boolean addDummyData();
 
 }
