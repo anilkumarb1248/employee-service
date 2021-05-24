@@ -1,13 +1,23 @@
 package com.app.bak.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +29,13 @@ import com.app.bak.model.Address;
 import com.app.bak.model.Employee;
 import com.app.bak.repository.EmployeeRepository;
 import com.app.bak.util.ResponseStatus;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service("employeeService")
 public class EmployeeServiceImpl implements EmployeeService {
+
+	Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
 	@Autowired
 	EmployeeRepository employeeRepository;
@@ -34,6 +48,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 		entitiesList.stream().forEach(employeeEntity -> {
 			employeesList.add(convertToBean(employeeEntity));
 		});
+		return employeesList;
+	}
+
+	@Override
+	public List<Employee> getEmployeesByPagination(int pageNumber, int pageSize, String sortOrder, String sortingBy) {
+		List<Employee> employeesList = new ArrayList<>();
+
+		try {
+			Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortingBy);
+			Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+			Page<EmployeeEntity> page = employeeRepository.findAll(pageable);
+			List<EmployeeEntity> entitiesList = page.getContent();
+			entitiesList.stream().forEach(employeeEntity -> {
+				employeesList.add(convertToBean(employeeEntity));
+			});
+
+		} catch (Exception e) {
+			LOGGER.error("Error occured while fetching the employees by pagination");
+		}
 		return employeesList;
 	}
 
@@ -52,7 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public ResponseStatus addEmployee(Employee employee) {
-		
+
 		if (!isDuplicateEmployee(true, employee)) {
 			EmployeeEntity emp = employeeRepository.save(convertToEntity(employee));
 
@@ -109,9 +142,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (isEmployeeExist(employeeId)) {
 			employeeRepository.deleteById(employeeId);
 
-			return createResponseStatus(HttpStatus.OK, "Employees deleted successfully");
+			return createResponseStatus(HttpStatus.OK, "Employee deleted successfully");
 		} else {
 			throw new EmployeeNotFoundException("No employee found with id: " + employeeId);
+		}
+	}
+
+	@Override
+	@CacheEvict(cacheNames = "employees")
+	public ResponseStatus deleteAll() {
+		try {
+//			employeeRepository.deleteAllInBatch(); // Not working due to Address constraints
+
+			List<EmployeeEntity> entitiesList = employeeRepository.findAll();
+			employeeRepository.deleteAll(entitiesList);
+			return createResponseStatus(HttpStatus.OK, "Employees deleted successfully");
+		} catch (Exception e) {
+			return createResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete all employees");
 		}
 	}
 
@@ -175,8 +222,67 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	private boolean isEmployeeExist(int id) {
-		Optional<EmployeeEntity> optional = employeeRepository.findById(id);
-		return optional.isPresent();
+//		Optional<EmployeeEntity> optional = employeeRepository.findById(id);
+//		return optional.isPresent();]
+		return employeeRepository.existsById(id);
+	}
+
+	@Override
+	@Cacheable(cacheNames = "employees", key = "#name")
+	public Employee getEmployeeByName(String firstName) {
+
+		Optional<EmployeeEntity> optional = employeeRepository.findByFirstName(firstName);
+		if (!optional.isPresent()) {
+			throw new EmployeeNotFoundException("No employee found with firstName:" + firstName);
+		}
+
+		EmployeeEntity employeeEntity = optional.get();
+		return convertToBean(employeeEntity);
+	}
+
+	@Override
+	public boolean addDummyData() {
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			Resource resource = new ClassPathResource("employees-data.json");
+			InputStream inputStream = resource.getInputStream();
+			TypeReference<List<Employee>> typeReference = new TypeReference<List<Employee>>() {
+			};
+
+			List<Employee> list = mapper.readValue(inputStream, typeReference);
+
+//			addEmployees(list);
+
+			List<EmployeeEntity> entityList = new ArrayList<>();
+			list.forEach(employee -> {
+				if (!isDuplicateEmployee(true, employee)) {
+					entityList.add(convertToEntity(employee));
+				}
+			});
+			employeeRepository.saveAll(entityList);
+			LOGGER.info("Created dummy data successfully");
+			return true;
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+
+		return false;
+	}
+
+	@Override
+	public void callStoredProcedure() {
+		// Created FIND_LESS_SALARIS_EMPLOYEES procedure in mysql, find in DML.txt
+		LOGGER.info("Procedure call Started");
+		List<EmployeeEntity> list = employeeRepository.findEmployeesBySalary(30000.00);
+		list.forEach(entity->{
+			LOGGER.info(entity.toString());
+		});
+		
+//		HashMap<Object, Object> map = employeeRepository.findEmployeesBySalary(30000.00);
+//		LOGGER.info(map.size()+"");
+		LOGGER.info("Procedure call Ended");
+
 	}
 
 }

@@ -5,6 +5,12 @@ CREATE USER 'employee' IDENTIFIED BY 'employee';
 --- Grant the permissions
 
 	GRANT ALL PRIVILEGES ON EMPLOYEE_DATABASE.* TO 'employee'@'localhost';
+	
+	If you failed to grant on localhost, you have to create the user like this
+	
+	CREATE USER 'employee'@'localhost' IDENTIFIED WITH mysql_native_password BY 'employee';
+	GRANT ALL PRIVILEGES ON EMPLOYEE_DATABASE.* employee'@'localhost';
+
 
 ---- Conntect to the user using command prompt
 
@@ -17,7 +23,17 @@ CREATE DATABASE  IF NOT EXISTS EMPLOYEE_DATABASE;
 
 USE EMPLOYEE_DATABASE;
 
----- Create tables -- It is better to use auto generated tables by spring jpa - lot of changes
+---- Create tables -- It is better to use auto generated tables by spring data jpa - lot of changes
+
+----- ******** -----------
+// User Creation in Oracle
+
+CREATE USER employee IDENTIFIED BY employee;
+GRANT CONNECT, RESOURCE, DBA TO employee;
+GRANT UNLIMITED TABLESPACE TO employee;
+
+----- ******** -----------
+
 
 DROP TABLE IF EXISTS EMPLOYEE;
 DROP TABLE IF EXISTS USER;
@@ -54,3 +70,15 @@ CREATE TABLE USER(
    ACCESS_TYPES VARCHAR(100),
    PRIMARY KEY ( ID )
 );
+
+-----------
+DELIMITER &&  
+CREATE PROCEDURE FIND_LESS_SALARIS_EMPLOYEES (IN IN_SALARY INT)  
+BEGIN  
+    SELECT * FROM EMPLOYEE WHERE SALARY < IN_SALARY;     
+END && DELIMITER;
+
+
+CALL FIND_LESS_SALARIS_EMPLOYEES(30000);
+
+DROP PROCEDURE FIND_LESS_SALARIS_EMPLOYEES;  

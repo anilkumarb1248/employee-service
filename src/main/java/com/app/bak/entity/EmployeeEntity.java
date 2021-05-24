@@ -13,8 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.ParameterMode;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
 import com.app.bak.enums.Gender;
@@ -23,10 +27,19 @@ import com.app.bak.enums.Role;
 
 @Entity
 @Table(name = "EMPLOYEE")
-public class EmployeeEntity  implements Serializable{
+@NamedStoredProcedureQueries({
+		@NamedStoredProcedureQuery(
+				name = "findLessSalariesEmployees", 
+				procedureName = "FIND_LESS_SALARIS_EMPLOYEES", 
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, name = "IN_SALARY", type = Double.class) 
+				},
+				resultClasses = { EmployeeEntity.class }
+		) })
+public class EmployeeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name = "EMPLOYEE_ID")
 //	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -322,6 +335,16 @@ public class EmployeeEntity  implements Serializable{
 	 */
 	public void setAddressList(List<AddressEntity> addressList) {
 		this.addressList = addressList;
+	}
+
+	@Override
+	public String toString() {
+		return "EmployeeEntity [employeeId=" + employeeId + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", fatherName=" + fatherName + ", motherName=" + motherName
+				+ ", gurdianName=" + gurdianName + ", role=" + role + ", salary=" + salary + ", dateOfBirth="
+				+ dateOfBirth + ", gender=" + gender + ", mobileNumber=" + mobileNumber + ", alternateNumber="
+				+ alternateNumber + ", email=" + email + ", maritalStatus=" + maritalStatus + ", spouseName="
+				+ spouseName + ", addressList=" + addressList + "]";
 	}
 
 }
